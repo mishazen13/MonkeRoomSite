@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Privacy Policy — MonkeRoom</title>
+<meta name="description" content="MonkeRoom Privacy Policy">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+:root{--bg:#070a08;--green:#8dff4f;--white:#f3f7f1;--muted:#8c998d;--border:rgba(255,255,255,.09)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{min-height:100vh;font-family:Inter,Arial,sans-serif;color:var(--white);background:radial-gradient(circle at 50% -10%,rgba(141,255,79,.12),transparent 35%),radial-gradient(circle at 100% 50%,rgba(57,211,83,.05),transparent 30%),var(--bg);overflow-x:hidden}
+.noise{position:fixed;inset:0;z-index:100;pointer-events:none;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E")}
+.grid{position:fixed;inset:0;pointer-events:none;opacity:.13;background-image:linear-gradient(rgba(141,255,79,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(141,255,79,.045) 1px,transparent 1px);background-size:70px 70px;mask-image:linear-gradient(to bottom,black,transparent 90%)}
+.orb{position:fixed;width:500px;height:500px;border-radius:50%;filter:blur(120px);pointer-events:none;opacity:.07}.one{background:var(--green);left:15%;top:-350px}.two{background:#39d353;right:-350px;top:40%}
+nav{position:fixed;z-index:50;top:18px;left:50%;transform:translateX(-50%);width:min(1160px,calc(100% - 30px));height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 10px 0 22px;background:rgba(10,14,11,.72);border:1px solid var(--border);border-radius:20px;backdrop-filter:blur(22px);box-shadow:0 15px 50px rgba(0,0,0,.35)}
+.brand{display:flex;align-items:center;gap:11px;color:white;text-decoration:none;font-size:17px;font-weight:900}.brand-icon{width:39px;height:39px;display:grid;place-items:center;border-radius:12px;color:var(--green);background:rgba(141,255,79,.07);border:1px solid rgba(141,255,79,.2)}
+.back{color:#9fa89f;text-decoration:none;padding:10px 14px;border-radius:11px;font-size:13px;font-weight:600}.back:hover{color:#fff;background:rgba(255,255,255,.055)}
+.btn{display:inline-flex;align-items:center;gap:9px;padding:12px 17px;color:#071008;background:var(--green);border-radius:13px;text-decoration:none;font-size:12px;font-weight:900}
+header{width:min(1000px,calc(100% - 40px));margin:auto;text-align:center;padding:165px 0 60px}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;padding:8px 13px;margin-bottom:25px;color:#b6c3b6;font-size:10px;font-weight:800;letter-spacing:1.7px;text-transform:uppercase;border:1px solid rgba(141,255,79,.15);background:rgba(141,255,79,.045);border-radius:999px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 12px var(--green)}
+h1{font-size:clamp(48px,8vw,86px);line-height:.95;letter-spacing:-5px;font-weight:900;background:linear-gradient(180deg,#fff,#e8f3e6 50%,#8dff4f);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:20px}
+.header-description{max-width:620px;margin:auto;color:var(--muted);font-size:14px;line-height:1.75}
+.policy{width:min(900px,calc(100% - 30px));margin:0 auto 100px;padding:55px;background:linear-gradient(145deg,rgba(255,255,255,.06),rgba(255,255,255,.025));border:1px solid var(--border);border-radius:28px;box-shadow:0 30px 90px rgba(0,0,0,.35)}
+.updated{display:inline-flex;padding:8px 11px;margin-bottom:35px;color:#9eaa9f;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.06);border-radius:9px;font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase}
+section{padding:31px 0;border-top:1px solid rgba(255,255,255,.065)}section:first-of-type{border-top:0;padding-top:0}
+h2{display:flex;align-items:center;gap:12px;margin-bottom:15px;font-size:21px;letter-spacing:-.6px}.number{display:grid;place-items:center;width:30px;height:30px;flex-shrink:0;color:var(--green);background:rgba(141,255,79,.07);border:1px solid rgba(141,255,79,.13);border-radius:9px;font-size:10px;font-weight:900}
+p{color:#919c92;font-size:13px;line-height:1.85;margin-bottom:12px}p:last-child{margin-bottom:0}ul{margin:13px 0 0 19px;color:#919c92}li{margin:7px 0;padding-left:5px;font-size:13px;line-height:1.7}li::marker{color:var(--green)}.highlight{color:var(--green);font-weight:700}
+.discord-box{margin-top:18px;padding:20px;border-radius:15px;background:linear-gradient(100deg,rgba(141,255,79,.075),rgba(141,255,79,.025));border:1px solid rgba(141,255,79,.13)}.discord-box a{color:var(--green);text-decoration:none;font-weight:800}
+footer{width:min(900px,calc(100% - 30px));margin:auto;padding:28px 0 45px;border-top:1px solid var(--border);display:flex;justify-content:space-between;gap:20px;color:#687168;font-size:11px}
+@media(max-width:700px){nav{width:calc(100% - 20px);top:10px;height:62px;padding-left:13px}.brand{font-size:14px}.brand-icon{width:36px;height:36px}.back{display:none}header{padding-top:125px}h1{letter-spacing:-3px}.policy{padding:30px 22px;border-radius:22px}section{padding:25px 0}footer{flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="noise"></div><div class="grid"></div><div class="orb one"></div><div class="orb two"></div>
+
+<nav>
+<a href="index.html" class="brand"><span class="brand-icon">🦍</span>MONKEROOM</a>
+<a href="index.html" class="back">← BACK TO MONKEROOM</a>
+<a href="https://discord.gg/G72NdjFfQG" target="_blank" rel="noopener noreferrer" class="btn">◈ DISCORD</a>
+</nav>
+
+<header>
+<div class="eyebrow"><span class="dot"></span>MONKEROOM LEGAL</div>
+<h1>Privacy Policy</h1>
+<p class="header-description">This page explains what information MonkeRoom may process through the game, website and Discord bot, why it may be used, and how we approach privacy.</p>
+</header>
+
+<main class="policy">
+<div class="updated">Last Updated · September 2026</div>
+
+<section><h2><span class="number">01</span>Information We Collect</h2>
+<p>MonkeRoom is designed to collect as little personal information as reasonably necessary to provide its services.</p>
+<p>Depending on how you interact with MonkeRoom, certain technical, gameplay, Discord, or moderation information may be processed.</p>
+<ul><li>IP address and connection information</li><li>Browser and device information</li><li>Player, account, or Discord identifiers</li><li>In-game username</li><li>Multiplayer session information</li><li>Game statistics</li><li>Discord server configuration and command usage</li><li>Moderation, anti-cheat, and diagnostic information</li></ul>
+</section>
+
+<section><h2><span class="number">02</span>How We Use Information</h2>
+<p>Information may be used to operate, secure, maintain, and improve MonkeRoom, its website, Discord bot, and community.</p>
+<ul><li>Provide and maintain game and bot functionality</li><li>Display game status and basic statistics</li><li>Operate multiplayer functionality</li><li>Prevent cheating, abuse, spam, and malicious activity</li><li>Moderate the community</li><li>Diagnose technical problems</li><li>Improve the game, bot, and website</li><li>Maintain service security and stability</li></ul>
+<p><span class="highlight">We do not sell personal information to third parties.</span></p>
+</section>
+
+<section><h2><span class="number">03</span>Discord Bot</h2>
+<p>If you use or install the MonkeRoom Discord bot, the bot may process information required for its features, such as Discord user IDs, server IDs, channel or role configuration, command usage, and moderation or diagnostic data.</p>
+<p>The bot does not need access to private Discord messages unless a specific feature explicitly requires such access and the necessary permissions are granted.</p>
+</section>
+
+<section><h2><span class="number">04</span>Game Information</h2>
+<p>When playing MonkeRoom, information necessary for multiplayer functionality, moderation, security, and gameplay may be processed.</p>
+<p>The website or Discord bot may display non-sensitive game information such as current player count, active rooms, game version, or general service status.</p>
+<p>We do not intentionally request sensitive personal information through the game.</p>
+</section>
+
+<section><h2><span class="number">05</span>Discord</h2>
+<p>MonkeRoom provides a Discord community for players. If you choose to join or interact with the Discord server, your use of Discord is subject to Discord's own Privacy Policy and Terms of Service.</p>
+<p>MonkeRoom does not control information collected directly by Discord.</p>
+<div class="discord-box"><a href="https://discord.gg/G72NdjFfQG" target="_blank" rel="noopener noreferrer">◈ Join the MonkeRoom Discord →</a></div>
+</section>
+
+<section><h2><span class="number">06</span>Cookies & Website Technologies</h2>
+<p>The MonkeRoom website may use essential technologies required for normal website functionality.</p>
+<p>If third-party services are added in the future, those services may use cookies, local storage, analytics, or similar technologies according to their own policies.</p>
+</section>
+
+<section><h2><span class="number">07</span>Third-Party Services</h2>
+<p>MonkeRoom may rely on third-party services such as hosting providers, game servers, analytics providers, authentication services, Discord, or other infrastructure.</p>
+<p>These services may process information according to their own privacy policies and terms. We recommend reviewing the policies of services you choose to use.</p>
+</section>
+
+<section><h2><span class="number">08</span>Data Retention</h2>
+<p>Information is retained only for as long as reasonably necessary for the purposes described in this Privacy Policy.</p>
+<p>Certain technical, security, or moderation information may be retained longer when necessary to investigate abuse, maintain security, resolve disputes, or comply with applicable legal obligations.</p>
+</section>
+
+<section><h2><span class="number">09</span>Data Security</h2>
+<p>We take reasonable measures to protect information processed through MonkeRoom.</p>
+<p>However, no website, game, server, or electronic transmission can be guaranteed to be completely secure.</p>
+</section>
+
+<section><h2><span class="number">10</span>Children's Privacy</h2>
+<p>MonkeRoom does not knowingly request or intentionally collect sensitive personal information from children.</p>
+<p>If you believe that a child has provided personal information to MonkeRoom that should not have been collected, please contact the MonkeRoom team through the official community Discord.</p>
+</section>
+
+<section><h2><span class="number">11</span>Your Rights</h2>
+<p>Depending on where you live, you may have rights concerning your personal information.</p>
+<ul><li>Request information about personal data we process</li><li>Request correction of inaccurate information</li><li>Request deletion of certain information</li><li>Object to certain processing</li><li>Request restriction of processing</li><li>Request a copy of certain information</li></ul>
+<p>Some rights may be limited by applicable law or legitimate security and operational requirements.</p>
+</section>
+
+<section><h2><span class="number">12</span>International Users</h2>
+<p>MonkeRoom may use servers or service providers located in countries different from your own.</p>
+<p>As a result, information may be processed in jurisdictions outside your country of residence where permitted by applicable law.</p>
+</section>
+
+<section><h2><span class="number">13</span>Changes to This Policy</h2>
+<p>We may update this Privacy Policy from time to time.</p>
+<p>When changes are made, the <span class="highlight">Last Updated</span> date at the top of this page will be updated.</p>
+</section>
+
+<section><h2><span class="number">14</span>Contact</h2>
+<p>If you have questions, concerns, or requests regarding this Privacy Policy or the handling of information by MonkeRoom, please contact the MonkeRoom team through the official community Discord server.</p>
+<div class="discord-box"><a href="https://discord.gg/G72NdjFfQG" target="_blank" rel="noopener noreferrer">https://discord.gg/G72NdjFfQG</a></div>
+</section>
+
+<section><h2><span class="number">15</span>Disclaimer</h2>
+<p>MonkeRoom is an independent fan-made project and is not affiliated with, endorsed by, or sponsored by the creators or owners of Gorilla Tag.</p>
+</section>
+</main>
+
+<footer><div>© 2026 <strong>MonkeRoom</strong>. Fan-made project.</div><div>Privacy Policy · September 2026</div></footer>
+</body>
+</html>
