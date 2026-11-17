@@ -4,25 +4,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#080b09">
-    <meta name="description" content="Official MonkeRoom Privacy Policy. Learn how player information is collected, used, stored and protected.">
+    <meta name="description" content="Privacy Policy for MonkeRoom, developed by Primal Theory. Learn how we process account, gameplay, platform, multiplayer and voice chat information.">
+    <meta name="theme-color" content="#070a08">
+
     <title>Privacy Policy — MonkeRoom</title>
 
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
+    <style>
         :root {
             --bg: #070a08;
+            --surface: rgba(18, 25, 19, 0.88);
+            --surface-light: rgba(255, 255, 255, 0.035);
             --green: #8dff4f;
-            --white: #f3f7f1;
-            --muted: #8c998d;
-            --border: rgba(255,255,255,.09);
+            --green-dark: #5dc92e;
+            --text: #f4f7f2;
+            --muted: #9ba69a;
+            --border: rgba(141, 255, 79, 0.13);
         }
 
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
         html {
@@ -31,258 +37,239 @@
 
         body {
             min-height: 100vh;
-            font-family: Inter, Arial, sans-serif;
-            color: var(--white);
-            background:
-                radial-gradient(circle at 50% -10%, rgba(141,255,79,.12), transparent 35%),
-                radial-gradient(circle at 100% 50%, rgba(57,211,83,.05), transparent 30%),
-                var(--bg);
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
             overflow-x: hidden;
+            line-height: 1.7;
         }
 
-        .noise {
+        body::before {
+            content: "";
             position: fixed;
             inset: 0;
-            z-index: 100;
-            pointer-events: none;
-            opacity: .035;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
-        }
-
-        .grid {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            opacity: .13;
             background-image:
-                linear-gradient(rgba(141,255,79,.045) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(141,255,79,.045) 1px, transparent 1px);
-            background-size: 70px 70px;
-            mask-image: linear-gradient(to bottom, black, transparent 90%);
-        }
-
-        .orb {
-            position: fixed;
-            width: 500px;
-            height: 500px;
-            border-radius: 50%;
-            filter: blur(120px);
+                linear-gradient(rgba(255,255,255,0.012) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.012) 1px, transparent 1px);
+            background-size: 55px 55px;
             pointer-events: none;
-            opacity: .07;
+            z-index: -1;
         }
 
-        .one {
-            background: var(--green);
-            left: 15%;
-            top: -350px;
-        }
-
-        .two {
-            background: #39d353;
-            right: -350px;
-            top: 40%;
-        }
-
-        nav {
+        body::after {
+            content: "";
             position: fixed;
-            z-index: 50;
+            inset: 0;
+            background:
+                radial-gradient(circle at 15% 15%, rgba(96, 255, 65, 0.09), transparent 28%),
+                radial-gradient(circle at 85% 65%, rgba(96, 255, 65, 0.055), transparent 30%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        a {
+            color: var(--green);
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: #b5ff91;
+        }
+
+        .navbar {
+            position: fixed;
             top: 18px;
             left: 50%;
             transform: translateX(-50%);
-            width: min(1160px, calc(100% - 30px));
+            width: min(1120px, calc(100% - 36px));
             height: 68px;
+            padding: 0 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 10px 0 22px;
-            background: rgba(10,14,11,.72);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            backdrop-filter: blur(22px);
-            -webkit-backdrop-filter: blur(22px);
-            box-shadow: 0 15px 50px rgba(0,0,0,.35);
+            background: rgba(12, 17, 13, 0.82);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 18px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 100;
         }
 
         .brand {
-            display: flex;
-            align-items: center;
-            gap: 11px;
             color: white;
-            text-decoration: none;
             font-size: 17px;
             font-weight: 900;
+            letter-spacing: 1.5px;
         }
 
-        .brand-icon {
-            width: 39px;
-            height: 39px;
-            display: grid;
-            place-items: center;
-            border-radius: 12px;
+        .brand span {
             color: var(--green);
-            background: rgba(141,255,79,.07);
-            border: 1px solid rgba(141,255,79,.2);
         }
 
-        .back {
-            color: #9fa89f;
-            text-decoration: none;
-            padding: 10px 14px;
-            border-radius: 11px;
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-link {
+            color: #d0d8ce;
             font-size: 13px;
             font-weight: 600;
+            padding: 10px 15px;
+            border-radius: 10px;
+            transition: 0.2s;
         }
 
-        .back:hover {
+        .nav-link:hover {
+            background: rgba(255,255,255,0.06);
             color: white;
-            background: rgba(255,255,255,.055);
         }
 
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 9px;
-            padding: 12px 17px;
-            color: #071008;
+        .discord-button {
             background: var(--green);
-            border-radius: 13px;
-            text-decoration: none;
+            color: #10170d;
             font-size: 12px;
-            font-weight: 900;
+            font-weight: 800;
+            padding: 11px 17px;
+            border-radius: 10px;
+            transition: 0.2s;
         }
 
-        header {
-            width: min(1000px, calc(100% - 40px));
-            margin: auto;
+        .discord-button:hover {
+            background: #b5ff91;
+            color: #10170d;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            width: min(900px, calc(100% - 40px));
+            margin: 0 auto;
+        }
+
+        .hero {
+            padding: 165px 0 55px;
             text-align: center;
-            padding: 165px 0 60px;
         }
 
         .eyebrow {
             display: inline-flex;
             align-items: center;
             gap: 9px;
-            padding: 8px 13px;
-            margin-bottom: 25px;
-            color: #b6c3b6;
-            font-size: 10px;
+            color: var(--green);
+            font-size: 11px;
             font-weight: 800;
-            letter-spacing: 1.7px;
+            letter-spacing: 3px;
             text-transform: uppercase;
-            border: 1px solid rgba(141,255,79,.15);
-            background: rgba(141,255,79,.045);
-            border-radius: 999px;
-        }
-
-        .dot {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: var(--green);
-            box-shadow: 0 0 12px var(--green);
-        }
-
-        h1 {
-            font-size: clamp(48px, 8vw, 86px);
-            line-height: .95;
-            letter-spacing: -5px;
-            font-weight: 900;
-            background: linear-gradient(180deg, #fff, #e8f3e6 50%, #8dff4f);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
             margin-bottom: 20px;
         }
 
-        .header-description {
+        .eyebrow::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            background: var(--green);
+            border-radius: 50%;
+            box-shadow: 0 0 12px var(--green);
+        }
+
+        .hero h1 {
+            font-size: clamp(42px, 8vw, 76px);
+            line-height: 1.05;
+            font-weight: 900;
+            letter-spacing: -4px;
+            background: linear-gradient(110deg, #ffffff 15%, #baff9c 55%, var(--green) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 22px;
+        }
+
+        .hero p {
             max-width: 650px;
-            margin: auto;
+            margin: 0 auto;
             color: var(--muted);
-            font-size: 14px;
-            line-height: 1.75;
+            font-size: 15px;
+            line-height: 1.8;
         }
 
         .policy {
-            width: min(900px, calc(100% - 30px));
-            margin: 0 auto 100px;
-            padding: 55px;
-            background: linear-gradient(145deg, rgba(255,255,255,.06), rgba(255,255,255,.025));
+            background: var(--surface);
             border: 1px solid var(--border);
-            border-radius: 28px;
-            box-shadow: 0 30px 90px rgba(0,0,0,.35);
+            border-radius: 24px;
+            padding: 45px;
+            margin-bottom: 90px;
+            box-shadow: 0 25px 100px rgba(0,0,0,0.28);
         }
 
         .updated {
             display: inline-flex;
-            padding: 8px 11px;
-            margin-bottom: 35px;
-            color: #9eaa9f;
-            background: rgba(255,255,255,.035);
-            border: 1px solid rgba(255,255,255,.06);
-            border-radius: 9px;
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: .7px;
-            text-transform: uppercase;
-        }
-
-        section {
-            padding: 31px 0;
-            border-top: 1px solid rgba(255,255,255,.065);
-        }
-
-        section:first-of-type {
-            border-top: 0;
-            padding-top: 0;
-        }
-
-        h2 {
-            display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 15px;
-            font-size: 21px;
-            letter-spacing: -.6px;
-        }
-
-        .number {
-            display: grid;
-            place-items: center;
-            width: 30px;
-            height: 30px;
-            flex-shrink: 0;
+            gap: 8px;
+            padding: 8px 13px;
+            border-radius: 8px;
+            background: rgba(141,255,79,0.08);
+            border: 1px solid rgba(141,255,79,0.15);
             color: var(--green);
-            background: rgba(141,255,79,.07);
-            border: 1px solid rgba(141,255,79,.13);
-            border-radius: 9px;
-            font-size: 10px;
-            font-weight: 900;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 32px;
         }
 
-        p {
-            color: #919c92;
-            font-size: 13px;
-            line-height: 1.85;
-            margin-bottom: 12px;
+        .section {
+            margin-bottom: 35px;
         }
 
-        p:last-child {
+        .section:last-child {
             margin-bottom: 0;
         }
 
-        ul {
-            margin: 13px 0 0 19px;
-            color: #919c92;
+        .section h2 {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            color: white;
+            font-size: 19px;
+            font-weight: 800;
+            margin-bottom: 13px;
         }
 
-        li {
-            margin: 7px 0;
+        .number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 29px;
+            height: 29px;
+            flex-shrink: 0;
+            border-radius: 8px;
+            background: rgba(141,255,79,0.1);
+            color: var(--green);
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .section p {
+            color: #aeb8ac;
+            font-size: 13.5px;
+            line-height: 1.9;
+            margin-bottom: 12px;
+        }
+
+        .section ul {
+            padding-left: 22px;
+            margin: 12px 0;
+        }
+
+        .section li {
+            color: #aeb8ac;
+            font-size: 13.5px;
+            line-height: 1.9;
             padding-left: 5px;
-            font-size: 13px;
-            line-height: 1.7;
+            margin-bottom: 6px;
         }
 
-        li::marker {
+        .section li::marker {
             color: var(--green);
         }
 
@@ -291,81 +278,106 @@
             font-weight: 700;
         }
 
-        .discord-box {
+        .contact-box {
             margin-top: 18px;
-            padding: 20px;
+            padding: 24px;
             border-radius: 15px;
-            background: linear-gradient(100deg, rgba(141,255,79,.075), rgba(141,255,79,.025));
-            border: 1px solid rgba(141,255,79,.13);
+            background: rgba(141,255,79,0.055);
+            border: 1px solid rgba(141,255,79,0.16);
         }
 
-        .discord-box a {
-            color: var(--green);
-            text-decoration: none;
+        .contact-box h3 {
+            font-size: 16px;
             font-weight: 800;
-            overflow-wrap: anywhere;
+            margin-bottom: 8px;
         }
 
-        a {
-            overflow-wrap: anywhere;
+        .contact-box p {
+            margin-bottom: 14px;
+        }
+
+        .contact-link {
+            display: inline-block;
+            background: var(--green);
+            color: #10170d;
+            padding: 11px 17px;
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .contact-link:hover {
+            background: #b5ff91;
+            color: #10170d;
         }
 
         footer {
-            width: min(900px, calc(100% - 30px));
-            margin: auto;
-            padding: 28px 0 45px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            color: #687168;
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 30px 20px;
+            text-align: center;
+            color: #697468;
             font-size: 11px;
         }
 
         footer strong {
-            color: #9ba69c;
+            color: #a4b09f;
         }
 
-        @media(max-width:700px) {
-            nav {
-                width: calc(100% - 20px);
+        @media (max-width: 700px) {
+            .navbar {
                 top: 10px;
-                height: 62px;
-                padding-left: 13px;
+                width: calc(100% - 20px);
+                height: 60px;
+                padding: 0 14px;
             }
 
             .brand {
                 font-size: 14px;
             }
 
-            .brand-icon {
-                width: 36px;
-                height: 36px;
+            .nav-links {
+                gap: 4px;
             }
 
-            .back {
-                display: none;
+            .nav-link {
+                font-size: 11px;
+                padding: 9px;
             }
 
-            header {
-                padding-top: 125px;
+            .discord-button {
+                font-size: 10px;
+                padding: 10px;
             }
 
-            h1 {
-                letter-spacing: -3px;
+            .hero {
+                padding: 135px 0 40px;
+            }
+
+            .hero h1 {
+                letter-spacing: -2px;
+            }
+
+            .hero p {
+                font-size: 13px;
             }
 
             .policy {
-                padding: 30px 22px;
-                border-radius: 22px;
+                padding: 25px 20px;
+                border-radius: 18px;
+                margin-bottom: 55px;
             }
 
-            section {
-                padding: 25px 0;
+            .section h2 {
+                font-size: 16px;
             }
 
-            footer {
-                flex-direction: column;
+            .section p,
+            .section li {
+                font-size: 12.5px;
+            }
+
+            .updated {
+                margin-bottom: 25px;
             }
         }
     </style>
@@ -373,313 +385,221 @@
 
 <body>
 
-<div class="noise"></div>
-<div class="grid"></div>
-<div class="orb one"></div>
-<div class="orb two"></div>
+    <nav class="navbar">
+        <a href="index.html" class="brand">MONKE<span>ROOM</span></a>
 
-<nav>
-    <a href="index.html" class="brand">
-        <span class="brand-icon">🦍</span>
-        MONKEROOM
-    </a>
+        <div class="nav-links">
+            <a href="index.html" class="nav-link">Home</a>
+            <a href="https://discord.gg/G72NdjFfQG" target="_blank" rel="noopener noreferrer" class="discord-button">Discord</a>
+        </div>
+    </nav>
 
-    <a href="index.html" class="back">← BACK TO MONKEROOM</a>
-
-    <a href="https://discord.gg/G72NdjFfQG"
-       target="_blank"
-       rel="noopener noreferrer"
-       class="btn">
-        ◈ DISCORD
-    </a>
-</nav>
-
-<header>
-    <div class="eyebrow">
-        <span class="dot"></span>
-        MONKEROOM LEGAL
-    </div>
-
-    <h1>Privacy Policy</h1>
-
-    <p class="header-description">
-        This Privacy Policy explains how MonkeRoom collects, uses,
-        processes, and protects information when you play our game
-        or use our associated services.
-    </p>
-</header>
-
-<main class="policy">
-
-    <div class="updated">
-        Last Updated · November 13, 2026
-    </div>
-
-    <section>
-        <h2><span class="number">01</span>Who We Are</h2>
-
+    <header class="hero container">
+        <div class="eyebrow">Primal Theory · Legal</div>
+        <h1>Privacy Policy</h1>
         <p>
-            MonkeRoom is an independent multiplayer VR game developed
-            and operated by Mikhail Korobkin.
+            This Privacy Policy explains how MonkeRoom collects, uses,
+            processes, and protects information through the game and its
+            related services.
         </p>
+    </header>
 
-        <p>
-            For personal information processed by MonkeRoom under
-            our control, Mikhail Korobkin is the data controller.
-            This means that he determines why and how such information
-            is processed.
-        </p>
+    <main class="container">
+        <article class="policy">
 
-        <p>
-            This Privacy Policy applies to the MonkeRoom game and
-            its related online services. Third-party services may
-            have their own independent privacy policies.
-        </p>
-    </section>
+            <div class="updated">
+                LAST UPDATED · NOVEMBER 17, 2026
+            </div>
 
-    <section>
-        <h2><span class="number">02</span>Information We Collect</h2>
+            <section class="section">
+                <h2><span class="number">01</span> Introduction</h2>
+                <p>
+                    MonkeRoom is a multiplayer virtual reality game developed
+                    and operated by <span class="highlight">Primal Theory</span>
+                    ("we", "us", or "our").
+                </p>
+                <p>
+                    This Privacy Policy describes how information may be
+                    processed when you play MonkeRoom, use its online features,
+                    communicate with other players, or interact with our
+                    related services.
+                </p>
+                <p>
+                    By using MonkeRoom, you acknowledge the practices described
+                    in this Privacy Policy. If you do not agree with these
+                    practices, please discontinue using the game.
+                </p>
+            </section>
 
-        <p>
-            We process information that is reasonably necessary
-            to provide game functionality, multiplayer services,
-            account management, security, and player support.
-        </p>
+            <section class="section">
+                <h2><span class="number">02</span> Information We Process</h2>
+                <p>
+                    Depending on how you use MonkeRoom and which features are
+                    available, we and our service providers may process the
+                    following categories of information:
+                </p>
+                <ul>
+                    <li>
+                        <strong>Account and platform information:</strong>
+                        platform-provided user identifiers, player identifiers,
+                        display names, and account-related information made
+                        available through supported platform services.
+                    </li>
+                    <li>
+                        <strong>Gameplay information:</strong>
+                        usernames, player settings, inventory, virtual currency
+                        balances, purchased or unlocked content, statistics,
+                        progression, and multiplayer gameplay information.
+                    </li>
+                    <li>
+                        <strong>Multiplayer information:</strong>
+                        Photon user identifiers, room identifiers, connection
+                        information, session data, and information required to
+                        synchronize multiplayer gameplay.
+                    </li>
+                    <li>
+                        <strong>Voice communication:</strong>
+                        microphone audio transmitted through the game's
+                        multiplayer voice chat feature.
+                    </li>
+                    <li>
+                        <strong>Purchase information:</strong>
+                        transaction references, purchase status, and
+                        entitlement information where applicable to purchases
+                        or digital content.
+                    </li>
+                    <li>
+                        <strong>Technical information:</strong>
+                        diagnostic information, error reports, device and
+                        application information, and technical data processed
+                        by the platform or service providers.
+                    </li>
+                </ul>
+                <p>
+                    The exact information processed depends on the features
+                    you use, your platform settings, and the services required
+                    to operate the game.
+                </p>
+            </section>
 
-        <p>Depending on the features you use, this may include:</p>
+            <section class="section">
+                <h2><span class="number">03</span> Meta Platform and Meta SDK</h2>
+                <p>
+                    MonkeRoom uses Meta platform services and the Meta SDK to
+                    support functionality on compatible Meta Quest devices.
+                </p>
+                <p>
+                    Depending on the platform functionality used, this may
+                    involve processing:
+                </p>
+                <ul>
+                    <li>Platform-provided user identifiers.</li>
+                    <li>Account or display name information made available by Meta.</li>
+                    <li>Application entitlement and ownership verification information.</li>
+                    <li>Information required for platform authentication and application functionality.</li>
+                </ul>
+                <p>
+                    We use this information to identify players, support
+                    account-related functionality, verify access to the game,
+                    maintain security, and provide platform-compatible
+                    features.
+                </p>
+                <p>
+                    Meta independently processes information in accordance
+                    with its own privacy policies and platform terms.
+                    MonkeRoom does not control all information collected
+                    directly by Meta.
+                </p>
+                <p>
+                    More information is available in
+                    <a href="https://www.facebook.com/privacy/policy/" target="_blank" rel="noopener noreferrer">Meta's Privacy Policy</a>.
+                </p>
+            </section>
 
-        <ul>
-            <li>Meta account identifiers, including the Meta User ID
-                or application-scoped user identifier made available
-                through Meta services.</li>
+            <section class="section">
+                <h2><span class="number">04</span> Multiplayer Services — Photon</h2>
+                <p>
+                    MonkeRoom uses Photon services, including Photon PUN, to
+                    provide multiplayer functionality.
+                </p>
+                <p>
+                    These services may process information such as:
+                </p>
+                <ul>
+                    <li>Photon user identifiers.</li>
+                    <li>Room and session identifiers.</li>
+                    <li>Connection and networking information.</li>
+                    <li>Player state and gameplay information required for synchronization.</li>
+                </ul>
+                <p>
+                    This information is used to connect players, maintain
+                    multiplayer sessions, synchronize gameplay, and help
+                    prevent abuse of online features.
+                </p>
+                <p>
+                    Photon services are provided by Exit Games. Their
+                    processing of information is also subject to the
+                    applicable Photon privacy documentation and terms.
+                </p>
+                <p>
+                    More information:
+                    <a href="https://www.photonengine.com/" target="_blank" rel="noopener noreferrer">Photon Engine</a>.
+                </p>
+            </section>
 
-            <li>Meta account display information, such as an Oculus
-                username, when made available and used by the game.</li>
+            <section class="section">
+                <h2><span class="number">05</span> Voice Chat — Photon Voice</h2>
+                <p>
+                    MonkeRoom includes multiplayer voice communication
+                    functionality powered by Photon Voice.
+                </p>
+                <p>
+                    When you use voice chat, microphone audio is transmitted
+                    through the voice communication service so that other
+                    participants in the relevant multiplayer session can hear
+                    you.
+                </p>
+                <p>
+                    Voice communication is used to provide real-time
+                    communication between players. Your device and platform
+                    may require microphone permission for this feature.
+                </p>
+                <p>
+                    MonkeRoom does not provide a feature intended to record
+                    players' voice conversations. However, the technical
+                    processing, transmission, and handling of voice data by
+                    the service provider are subject to Photon Voice's
+                    applicable terms and privacy practices.
+                </p>
+                <p>
+                    You can control microphone access through your device's
+                    system settings and available in-game controls.
+                </p>
+            </section>
 
-            <li>Entitlement or ownership verification results used
-                to confirm access to MonkeRoom.</li>
-
-            <li>Player identifiers, usernames, account information,
-                and game-related profile data.</li>
-
-            <li>In-game inventory, cosmetics, virtual currency,
-                statistics, and progression information.</li>
-
-            <li>Photon network identifiers, multiplayer room information,
-                connection status, and gameplay synchronization data.</li>
-
-            <li>Voice communication data when using Photon Voice
-                multiplayer voice features.</li>
-
-            <li>Technical information such as IP addresses, connection
-                information, device or application information,
-                diagnostic information, and error reports processed
-                by our service providers.</li>
-
-            <li>Information voluntarily provided when contacting
-                our support team.</li>
-        </ul>
-
-        <p>
-            We do not intentionally collect more information than
-            is reasonably necessary for the operation of the game.
-        </p>
-    </section>
-
-    <section>
-        <h2><span class="number">03</span>Meta Horizon Platform Data</h2>
-
-        <p>
-            MonkeRoom uses Meta platform services and the Meta SDK
-            to provide functionality for Meta Quest devices.
-        </p>
-
-        <p>
-            Depending on the available permissions and platform
-            functionality, we may receive and process information
-            provided by Meta, including:
-        </p>
-
-        <ul>
-            <li>Meta User ID or an application-scoped account identifier.</li>
-            <li>Player display information made available by Meta.</li>
-            <li>Entitlement verification results.</li>
-            <li>Information required to authenticate a player and
-                verify access to the application.</li>
-        </ul>
-
-        <p>
-            We use this information to identify players, verify
-            ownership or entitlement to the game, provide account
-            functionality, and maintain the security of MonkeRoom.
-        </p>
-
-        <p>
-            We do not intentionally use Meta account identifiers
-            for unrelated advertising or sell them to third parties.
-        </p>
-
-        <p>
-            Meta may independently process information through
-            its platform and services under its own policies.
-            Our use of information received from Meta is subject
-            to applicable Meta developer policies, including the
-            Developer Data Use Policy.
-        </p>
-
-        <p>
-            Meta Privacy Policy:
-            <a class="highlight"
-               href="https://www.facebook.com/privacy/policy/"
-               target="_blank"
-               rel="noopener noreferrer">
-                https://www.facebook.com/privacy/policy/
-            </a>
-        </p>
-    </section>
-
-    <section>
-        <h2><span class="number">04</span>PlayFab Services</h2>
-
-        <p>
-            MonkeRoom uses Microsoft PlayFab for backend game
-            services and account-related functionality.
-        </p>
-
-        <p>
-            Depending on the features being used, PlayFab may
-            process information such as:
-        </p>
-
-        <ul>
-            <li>PlayFab player identifiers and account information.</li>
-            <li>Player usernames and profile information.</li>
-            <li>Game statistics and progression.</li>
-            <li>Virtual currency and inventory information.</li>
-            <li>Game-related records used for security and moderation.</li>
-            <li>Identifiers used to associate a game account with
-                a supported authentication provider, where configured.</li>
-        </ul>
-
-        <p>
-            We use PlayFab to manage player accounts, synchronize
-            game data, maintain inventories, support multiplayer
-            functionality, and protect the game against abuse.
-        </p>
-
-        <p>
-            If Meta account identifiers are linked to PlayFab
-            accounts in a particular authentication flow, those
-            identifiers may also be processed by PlayFab for
-            that purpose.
-        </p>
-
-        <p>
-            PlayFab is a Microsoft service. Its processing of
-            information is also governed by Microsoft's applicable
-            service and privacy terms.
-        </p>
-
-        <p>
-            Microsoft Privacy Statement:
-            <a class="highlight"
-               href="https://privacy.microsoft.com/privacystatement"
-               target="_blank"
-               rel="noopener noreferrer">
-                Microsoft Privacy Statement
-            </a>
-        </p>
-    </section>
-
-    <section>
-        <h2><span class="number">05</span>Photon Multiplayer Services</h2>
-
-        <p>
-            MonkeRoom uses Photon PUN and Photon multiplayer
-            infrastructure to provide online multiplayer gameplay.
-        </p>
-
-        <p>
-            Photon services may process information necessary
-            to establish and maintain multiplayer sessions, including:
-        </p>
-
-        <ul>
-            <li>Photon user identifiers.</li>
-            <li>Room and session identifiers.</li>
-            <li>Connection and network information.</li>
-            <li>Player names and multiplayer-related data.</li>
-            <li>Gameplay synchronization and network events.</li>
-        </ul>
-
-        <p>
-            This information is used to connect players, synchronize
-            gameplay, maintain multiplayer rooms, and support
-            the operation and security of online sessions.
-        </p>
-
-        <p>
-            Photon Privacy Policy:
-            <a class="highlight"
-               href="https://www.photonengine.com/privacy"
-               target="_blank"
-               rel="noopener noreferrer">
-                https://www.photonengine.com/privacy
-            </a>
-        </p>
-    </section>
-
-    <section>
-        <h2><span class="number">06</span>Photon Voice and Audio Data</h2>
-
-        <p>
-            MonkeRoom may use Photon Voice to provide real-time
-            voice communication between players.
-        </p>
-
-        <p>
-            When you use voice chat, audio captured through
-            your device's microphone may be transmitted through
-            the multiplayer voice service to provide communication
-            with other players.
-        </p>
-
-        <p>
-            Voice communication is processed to provide the
-            requested real-time functionality. We do not
-            intentionally use voice recordings for advertising
-            or unrelated purposes.
-        </p>
-
-        <p>
-            Microphone access is subject to the permissions
-            and controls provided by your device and platform.
-            You can avoid voice processing by not using voice
-            communication features.
-        </p>
-
-        <p>
-            Audio transmission may be processed by Photon
-            and its infrastructure providers according to
-            their applicable terms and privacy policies.
-        </p>
-    </section>
-
-    <section>
-        <h2><span class="number">07</span>Purchases and In-Game Items</h2>
-
-        <p>
-            If in-game purchases are available, MonkeRoom may
-            use Meta's purchase and entitlement services to
-            verify transactions and provide purchased digital
-            content.
-        </p>
-
-        <p>
-            Purchase-related information may include product
-            identifiers, transaction or entitlement information,
-            and purchase verification results.
-        </p>
-
-        <p>
+            <section class="section">
+                <h2><span class="number">06</span> PlayFab and Game Backend</h2>
+                <p>
+                    MonkeRoom uses Microsoft PlayFab services to support
+                    backend functionality and game-related account data.
+                </p>
+                <p>
+                    Depending on the features you use, PlayFab may process
+                    information such as:
+                </p>
+                <ul>
+                    <li>Player and account identifiers.</li>
+                    <li>Player usernames and account-related settings.</li>
+                    <li>Inventory, cosmetics, and unlocked digital items.</li>
+                    <li>Virtual currency balances and related game transactions.</li>
+                    <li>Game statistics and progression information.</li>
+                    <li>Records needed to maintain account security and enforce game rules.</li>
+                </ul>
+                <p>
+                    We use backend services to maintain player accounts,
+                    synchronize game data, manage inventory and virtual
+                    currency, deliver game functionality, and protect the
+                    game against fraud, cheating, and unauthorized access.
+                </p>
+                <p>
        
