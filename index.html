@@ -479,27 +479,24 @@
     loader.load("./assets/PlayerModelTricks.glb", gltf => {
       player = gltf.scene;
 
-      // Apply a local 90-degree bend to each upper arm while preserving
-      // the original Blender rest rotations. Replacing the rest rotations
-      // outright breaks this rig because its arm bones are already rotated.
+      // Pose the arms using the actual shoulder/upper-arm bones in this GLB.
+      // Pole.L / Pole.R have a -90/+90 degree rest rotation in the exported rig.
+      // Set their final local angles explicitly so the arms hang down instead
+      // of adding another rotation on top of an already rotated rest pose.
       const leftArm = player.getObjectByName("Pole.L");
       const rightArm = player.getObjectByName("Pole.R");
       const leftForearm = player.getObjectByName("LowerArm.L");
       const rightForearm = player.getObjectByName("LowerArm.R");
-      const head = player.getObjectByName("Head");
 
       if (leftArm && rightArm) {
-        leftArm.quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(
-          new THREE.Vector3(0, 0, 1), THREE.MathUtils.degToRad(-90)
-        ));
-        rightArm.quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(
-          new THREE.Vector3(0, 0, 1), THREE.MathUtils.degToRad(90)
-        ));
+        leftArm.rotation.set(0, 0, THREE.MathUtils.degToRad(-155));
+        rightArm.rotation.set(0, 0, THREE.MathUtils.degToRad(155));
+        // Slight elbow bends keep the silhouette from looking like a rigid T-pose.
+        if (leftForearm) leftForearm.rotation.z = THREE.MathUtils.degToRad(-18);
+        if (rightForearm) rightForearm.rotation.z = THREE.MathUtils.degToRad(18);
       } else {
         console.warn("Expected Pole.L / Pole.R bones were not found; showing exported rest pose.");
       }
-      // Keep forearms and head in their authored rest pose; their local axes
-      // are rig-specific and forcing Euler angles here can twist the mesh.
 
       // The exported character faces the camera along +Z. Do not add a 180° turn.
       player.rotation.set(0, 0, 0);
@@ -551,12 +548,14 @@
     new ResizeObserver(resize).observe(stage);
     resize();
 
-    canvas.addEventListener("pointermove", event => {
-      const rect = canvas.getBoundingClientRect();
-      pointerX = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
-      pointerY = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
-    });
-    canvas.addEventListener("pointerleave", () => { pointerX = 0; pointerY = 0; });
+    // Track the pointer across the entire document, not just over the 3D canvas.
+    // Viewport-normalized coordinates keep the response consistent on every section.
+    window.addEventListener("pointermove", event => {
+      pointerX = THREE.MathUtils.clamp((event.clientX / window.innerWidth - 0.5) * 2, -1, 1);
+      pointerY = THREE.MathUtils.clamp((event.clientY / window.innerHeight - 0.5) * 2, -1, 1);
+    }, { passive: true });
+    window.addEventListener("blur", () => { pointerX = 0; pointerY = 0; });
+    document.documentElement.addEventListener("pointerleave", () => { pointerX = 0; pointerY = 0; });
 
     function updateScrollProgress() {
       // Zero at the top of the page, then rotate gradually as the hero leaves view.
