@@ -178,6 +178,36 @@
     .loading.hidden { opacity:0; }
     .load-dot { display:inline-block; width:6px;height:6px;border-radius:50%;background:var(--accent);margin-right:10px;box-shadow:0 0 15px var(--accent);animation:pulse 1s infinite alternate; }
     @keyframes pulse { to { opacity:.25; transform:scale(.65); } }
+
+    /* Interactive details */
+    .model-controls { position:absolute; left:7%; bottom:9%; display:flex; gap:7px; z-index:4; }
+    .model-control { border:1px solid var(--line); color:var(--muted); background:var(--panel); backdrop-filter:blur(12px); padding:10px 12px; border-radius:3px; font:9px "DM Mono",monospace; letter-spacing:.1em; cursor:pointer; transition:.22s ease; }
+    .model-control:hover,.model-control.active { color:var(--text); border-color:var(--accent); background:color-mix(in srgb,var(--accent) 13%,var(--panel)); }
+    .model-hint { position:absolute; left:7%; bottom:3.5%; color:var(--muted); opacity:.7; font:8px "DM Mono",monospace; letter-spacing:.12em; pointer-events:none; }
+    .model-wrap { touch-action:pan-y; }
+    .model-wrap canvas { cursor:grab; }
+    .model-wrap canvas:active { cursor:grabbing; }
+    .play-selector { margin-top:22px; border:1px solid var(--line); background:var(--panel); box-shadow:var(--shadow); }
+    .play-selector-head { display:flex; justify-content:space-between; align-items:center; padding:22px 26px 12px; }
+    .selector-note { color:var(--muted); font-size:9px; }
+    .play-tabs { display:flex; gap:8px; padding:12px 26px 20px; border-bottom:1px solid var(--line); }
+    .play-tab { background:transparent; border:1px solid var(--line); color:var(--muted); padding:12px 16px; cursor:pointer; font:10px "DM Mono",monospace; letter-spacing:.1em; transition:.2s ease; }
+    .play-tab:hover,.play-tab.active { border-color:var(--accent); color:var(--text); background:color-mix(in srgb,var(--accent) 12%,transparent); }
+    .play-panel { min-height:150px; display:grid; grid-template-columns:70px 1fr 30px; align-items:center; gap:22px; padding:26px; }
+    .play-panel-mark { color:var(--accent); font:clamp(32px,5vw,54px) "DM Mono",monospace; letter-spacing:-.1em; }
+    .play-panel h3 { margin:0 0 8px; font-size:clamp(20px,3vw,28px); letter-spacing:-.05em; }
+    .play-panel p { margin:0; color:var(--muted); font-size:13px; line-height:1.8; max-width:600px; }
+    .play-panel-arrow { color:var(--accent); font-size:24px; }
+    .cursor-aura { position:fixed; width:320px; height:320px; border-radius:50%; pointer-events:none; z-index:1; opacity:0; background:radial-gradient(circle,color-mix(in srgb,var(--accent) 9%,transparent),transparent 68%); transform:translate(-50%,-50%); transition:opacity .25s ease; }
+    body.pointer-active .cursor-aura { opacity:1; }
+    .manifesto-card,.platform,.experience-art { transform-style:preserve-3d; transition:transform .25s ease,border-color .25s ease,background .4s ease; }
+    .manifesto-card:hover { border-color:color-mix(in srgb,var(--accent) 55%,var(--line)); }
+    .feature { transition:padding-left .25s ease,background .25s ease; }
+    .feature:hover { padding-left:10px; background:color-mix(in srgb,var(--accent) 5%,transparent); }
+    .button:active,.model-control:active,.play-tab:active { transform:scale(.97); }
+    @media (max-width:850px) { .model-controls { left:10%; bottom:7%; } .model-hint { left:10%; bottom:2.5%; } }
+    @media (max-width:520px) { .model-controls { left:9%; bottom:6%; gap:5px; } .model-control { padding:9px 8px; font-size:8px; } .model-hint { left:9%; bottom:2%; font-size:7px; } .play-selector-head { padding:18px 18px 10px; } .play-tabs { padding:10px 18px 16px; } .play-tab { padding:10px 11px; font-size:8px; } .play-panel { grid-template-columns:45px 1fr 18px; gap:12px; padding:20px 18px; } .play-panel p { font-size:11px; } .selector-note { font-size:7px; } }
+
     @media (max-width:850px) {
       .wrap { width:min(100% - 40px,var(--max)); }
       .nav-links { display:none; }
@@ -225,6 +255,7 @@
 </head>
 <body>
   <div class="noise" aria-hidden="true"></div>
+  <div class="cursor-aura" id="cursorAura" aria-hidden="true"></div>
   <header class="topbar">
     <div class="wrap nav">
       <a class="brand" href="#top" aria-label="MonkeRoom home">
@@ -270,6 +301,12 @@
           <canvas id="hero-canvas" aria-label="Interactive 3D MonkeRoom player model"></canvas>
           <div class="loading" id="modelLoading"><span><i class="load-dot"></i>INITIALIZING PLAYER MODEL</span></div>
           <div class="model-caption">PLAYER MODEL / 3D PREVIEW</div>
+          <div class="model-controls" aria-label="3D model controls">
+            <button class="model-control active" id="followMode" type="button" aria-pressed="true">FOLLOW</button>
+            <button class="model-control" id="spinMode" type="button" aria-pressed="false">AUTO SPIN</button>
+            <button class="model-control" id="resetModel" type="button">RESET VIEW</button>
+          </div>
+          <div class="model-hint" id="modelHint">MOVE CURSOR · DRAG TO ROTATE</div>
         </div>
       </div>
       <a class="scroll-cue" href="#about"><i></i>SCROLL TO EXPLORE</a>
@@ -302,6 +339,21 @@
             <h3>BETTER TOGETHER.</h3>
             <p>Meet other players in a shared VR space. MonkeRoom supports both multiplayer and solo play.</p>
           </article>
+        </div>
+        <div class="play-selector reveal" aria-label="Choose a play style">
+          <div class="play-selector-head">
+            <span class="section-index">INTERACTIVE / PLAY STYLE</span>
+            <span class="mono selector-note">PICK YOUR ENTRY POINT</span>
+          </div>
+          <div class="play-tabs" role="tablist" aria-label="Play style">
+            <button class="play-tab active" type="button" role="tab" aria-selected="true" data-mode="solo">01 / SOLO</button>
+            <button class="play-tab" type="button" role="tab" aria-selected="false" data-mode="multi">02 / MULTIPLAYER</button>
+          </div>
+          <div class="play-panel" role="tabpanel" aria-live="polite">
+            <div class="play-panel-mark" id="playMark">01</div>
+            <div><h3 id="playTitle">YOUR OWN PACE.</h3><p id="playDescription">Enter MonkeRoom on your own and explore the experience at your own pace.</p></div>
+            <span class="play-panel-arrow" aria-hidden="true">↗</span>
+          </div>
         </div>
       </div>
     </section>
@@ -414,6 +466,39 @@
     }, { threshold: 0.12 });
     document.querySelectorAll(".reveal").forEach(el => revealObserver.observe(el));
 
+    // Interactive solo / multiplayer information switcher.
+    const playContent = {
+      solo: { mark: "01", title: "YOUR OWN PACE.", text: "Enter MonkeRoom on your own and explore the experience at your own pace." },
+      multi: { mark: "02", title: "SHARE THE ROOM.", text: "Meet other players in a shared VR space and experience MonkeRoom together." }
+    };
+    document.querySelectorAll(".play-tab").forEach(tab => tab.addEventListener("click", () => {
+      document.querySelectorAll(".play-tab").forEach(item => {
+        const active = item === tab; item.classList.toggle("active", active); item.setAttribute("aria-selected", String(active));
+      });
+      const data = playContent[tab.dataset.mode];
+      document.getElementById("playMark").textContent = data.mark;
+      document.getElementById("playTitle").textContent = data.title;
+      document.getElementById("playDescription").textContent = data.text;
+    }));
+
+    // Site-wide cursor aura and subtle tilt on interactive cards.
+    const aura = document.getElementById("cursorAura");
+    window.addEventListener("pointermove", event => {
+      aura.style.left = event.clientX + "px"; aura.style.top = event.clientY + "px";
+      document.body.classList.add("pointer-active");
+    }, { passive: true });
+    document.addEventListener("pointerleave", () => document.body.classList.remove("pointer-active"));
+    document.querySelectorAll(".manifesto-card,.platform,.experience-art").forEach(card => {
+      card.addEventListener("pointermove", event => {
+        if (event.pointerType === "touch") return;
+        const r = card.getBoundingClientRect();
+        const x = (event.clientX - r.left) / r.width - .5;
+        const y = (event.clientY - r.top) / r.height - .5;
+        card.style.transform = `perspective(900px) rotateX(${-y * 3}deg) rotateY(${x * 3}deg) translateY(-2px)`;
+      });
+      card.addEventListener("pointerleave", () => { card.style.transform = ""; });
+    });
+
     // Three.js player preview.
     const canvas = document.getElementById("hero-canvas");
     const loading = document.getElementById("modelLoading");
@@ -473,33 +558,24 @@
     let pointerX = 0;
     let pointerY = 0;
     let scrollProgress = 0;
+    let viewMode = "follow";
+    let autoSpin = false;
+    let dragActive = false;
+    let lastDragX = 0;
+    let manualYaw = 0;
+    let targetManualYaw = 0;
+    let baseRotationY = 0;
     const clock = new THREE.Clock();
 
     const loader = new GLTFLoader();
     loader.load("./assets/PlayerModelTricks.glb", gltf => {
       player = gltf.scene;
 
-      // Pose the arms using the actual shoulder/upper-arm bones in this GLB.
-      // Pole.L / Pole.R have a -90/+90 degree rest rotation in the exported rig.
-      // Set their final local angles explicitly so the arms hang down instead
-      // of adding another rotation on top of an already rotated rest pose.
-      const leftArm = player.getObjectByName("Pole.L");
-      const rightArm = player.getObjectByName("Pole.R");
-      const leftForearm = player.getObjectByName("LowerArm.L");
-      const rightForearm = player.getObjectByName("LowerArm.R");
-
-      if (leftArm && rightArm) {
-        leftArm.rotation.set(0, 0, THREE.MathUtils.degToRad(-155));
-        rightArm.rotation.set(0, 0, THREE.MathUtils.degToRad(155));
-        // Slight elbow bends keep the silhouette from looking like a rigid T-pose.
-        if (leftForearm) leftForearm.rotation.z = THREE.MathUtils.degToRad(-18);
-        if (rightForearm) rightForearm.rotation.z = THREE.MathUtils.degToRad(18);
-      } else {
-        console.warn("Expected Pole.L / Pole.R bones were not found; showing exported rest pose.");
-      }
-
-      // The exported character faces the camera along +Z. Do not add a 180° turn.
-      player.rotation.set(0, 0, 0);
+      // Keep the pose exactly as exported from Blender.
+      // Do not modify bone rotations here: the website must not override the
+      // artist-authored pose stored in the GLB.
+      // The exported character faces the camera along +Z.
+      // Preserve the model's exported Blender transforms and pose.
       stageGroup.add(player);
       player.updateMatrixWorld(true);
       player.traverse(object => {
@@ -527,6 +603,7 @@
       player.updateMatrixWorld(true);
 
       baseY = player.position.y;
+      baseRotationY = player.rotation.y;
       loading.classList.add("hidden");
       setTimeout(() => loading.remove(), 500);
       window.monkeScene = { setTheme: theme => {
@@ -537,6 +614,37 @@
       console.error("Could not load MonkeRoom GLB model:", error);
       loading.innerHTML = "MODEL COULD NOT LOAD — CHECK ASSETS/PATH";
     });
+
+    const followButton = document.getElementById("followMode");
+    const spinButton = document.getElementById("spinMode");
+    document.getElementById("resetModel").addEventListener("click", () => {
+      targetManualYaw = 0; manualYaw = 0; scrollProgress = 0;
+      if (player) { player.rotation.y = baseRotationY; player.rotation.x = 0; }
+      pointerX = 0; pointerY = 0;
+      document.getElementById("modelHint").textContent = "VIEW RESET · MOVE CURSOR TO INTERACT";
+    });
+    followButton.addEventListener("click", () => {
+      viewMode = "follow"; autoSpin = false;
+      followButton.classList.add("active"); followButton.setAttribute("aria-pressed", "true");
+      spinButton.classList.remove("active"); spinButton.setAttribute("aria-pressed", "false");
+    });
+    spinButton.addEventListener("click", () => {
+      autoSpin = !autoSpin; viewMode = "spin";
+      spinButton.classList.toggle("active", autoSpin); spinButton.setAttribute("aria-pressed", String(autoSpin));
+      followButton.classList.toggle("active", !autoSpin); followButton.setAttribute("aria-pressed", String(!autoSpin));
+    });
+
+    // Drag directly on the 3D preview to inspect the player from any angle.
+    canvas.addEventListener("pointerdown", event => {
+      dragActive = true; lastDragX = event.clientX; canvas.setPointerCapture?.(event.pointerId);
+    });
+    canvas.addEventListener("pointermove", event => {
+      if (!dragActive) return;
+      const delta = event.clientX - lastDragX; lastDragX = event.clientX;
+      targetManualYaw += delta * 0.009;
+    });
+    const endDrag = () => { dragActive = false; };
+    canvas.addEventListener("pointerup", endDrag); canvas.addEventListener("pointercancel", endDrag);
 
     function resize() {
       const w = stage.clientWidth;
@@ -551,6 +659,7 @@
     // Track the pointer across the entire document, not just over the 3D canvas.
     // Viewport-normalized coordinates keep the response consistent on every section.
     window.addEventListener("pointermove", event => {
+      if (dragActive) return;
       pointerX = THREE.MathUtils.clamp((event.clientX / window.innerWidth - 0.5) * 2, -1, 1);
       pointerY = THREE.MathUtils.clamp((event.clientY / window.innerHeight - 0.5) * 2, -1, 1);
     }, { passive: true });
@@ -587,10 +696,14 @@
       if (player) {
         const targetY = baseY + Math.sin(t * 1.15) * 0.018;
         player.position.y += (targetY - player.position.y) * 0.035;
-        const scrollTurn = scrollProgress * 0.9;
-        const pointerTurn = pointerX * 0.12;
-        player.rotation.y += ((scrollTurn + pointerTurn) - player.rotation.y) * 0.055;
-        player.rotation.x += ((-pointerY * 0.025) - player.rotation.x) * 0.055;
+        if (autoSpin) targetManualYaw += 0.0045;
+        manualYaw += (targetManualYaw - manualYaw) * 0.12;
+        const scrollTurn = scrollProgress * 0.72;
+        const pointerTurn = viewMode === "follow" ? pointerX * 0.28 : 0;
+        const targetYaw = baseRotationY + scrollTurn + pointerTurn + manualYaw;
+        player.rotation.y += (targetYaw - player.rotation.y) * 0.075;
+        const targetPitch = viewMode === "follow" ? -pointerY * 0.055 : 0;
+        player.rotation.x += (targetPitch - player.rotation.x) * 0.06;
       }
       ring.rotation.z = t * 0.08;
       ring2.rotation.z = -t * 0.055;
