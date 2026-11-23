@@ -420,7 +420,7 @@
     const stage = document.getElementById("modelStage");
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(34, 1, 0.01, 100);
-    camera.position.set(0, 0.9, 5.8);
+    camera.position.set(0, 0.35, 5.8);
 
     const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.8));
@@ -460,12 +460,12 @@
     const ringMaterial = new THREE.MeshBasicMaterial({ color: 0x4d8dff, transparent: true, opacity: 0.38, depthWrite: false });
     const ring = new THREE.Mesh(new THREE.TorusGeometry(1.42, 0.004, 8, 120), ringMaterial);
     ring.rotation.x = Math.PI * 0.5;
-    ring.position.y = -1.18;
+    ring.position.y = -0.94;
     stageGroup.add(ring);
     const ring2Material = new THREE.MeshBasicMaterial({ color: 0x83b5ff, transparent: true, opacity: 0.2, depthWrite: false });
     const ring2 = new THREE.Mesh(new THREE.TorusGeometry(1.65, 0.002, 8, 120), ring2Material);
     ring2.rotation.x = Math.PI * 0.5;
-    ring2.position.y = -1.19;
+    ring2.position.y = -0.95;
     stageGroup.add(ring2);
 
     let player = null;
@@ -479,8 +479,9 @@
     loader.load("./assets/PlayerModelTricks.glb", gltf => {
       player = gltf.scene;
 
-      // Build a relaxed presentation pose from the existing Blender armature.
-      // Pole.L / Pole.R are the upper-arm pivot bones in this exported rig.
+      // Apply a local 90-degree bend to each upper arm while preserving
+      // the original Blender rest rotations. Replacing the rest rotations
+      // outright breaks this rig because its arm bones are already rotated.
       const leftArm = player.getObjectByName("Pole.L");
       const rightArm = player.getObjectByName("Pole.R");
       const leftForearm = player.getObjectByName("LowerArm.L");
@@ -488,27 +489,30 @@
       const head = player.getObjectByName("Head");
 
       if (leftArm && rightArm) {
-        leftArm.rotation.set(0, 0, THREE.MathUtils.degToRad(-145));
-        rightArm.rotation.set(0, 0, THREE.MathUtils.degToRad(145));
+        leftArm.quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(
+          new THREE.Vector3(0, 0, 1), THREE.MathUtils.degToRad(-90)
+        ));
+        rightArm.quaternion.multiply(new THREE.Quaternion().setFromAxisAngle(
+          new THREE.Vector3(0, 0, 1), THREE.MathUtils.degToRad(90)
+        ));
       } else {
         console.warn("Expected Pole.L / Pole.R bones were not found; showing exported rest pose.");
       }
-      if (leftForearm) leftForearm.rotation.z = THREE.MathUtils.degToRad(-7);
-      if (rightForearm) rightForearm.rotation.z = THREE.MathUtils.degToRad(7);
-      if (head) head.rotation.z = THREE.MathUtils.degToRad(-2.5);
+      // Keep forearms and head in their authored rest pose; their local axes
+      // are rig-specific and forcing Euler angles here can twist the mesh.
 
-      player.rotation.y = Math.PI;
+      // The exported character faces the camera along +Z. Do not add a 180° turn.
+      player.rotation.set(0, 0, 0);
       stageGroup.add(player);
       player.updateMatrixWorld(true);
       player.traverse(object => {
         if (object.isSkinnedMesh && object.skeleton) object.skeleton.update();
       });
 
-      // Fit by the posed character's HEIGHT rather than its original T-pose arm span.
-      // precise=true evaluates the skinned vertices after the procedural bone pose.
+      // Fit to the posed mesh height, not the original T-pose arm span.
       const posedBounds = new THREE.Box3().setFromObject(player, true);
       const posedSize = posedBounds.getSize(new THREE.Vector3());
-      const targetCharacterHeight = 1.95;
+      const targetCharacterHeight = 2.25;
       const scale = targetCharacterHeight / Math.max(posedSize.y, 0.001);
       player.scale.setScalar(scale);
       player.updateMatrixWorld(true);
@@ -516,12 +520,13 @@
         if (object.isSkinnedMesh && object.skeleton) object.skeleton.update();
       });
 
-      // Center the actual posed mesh and align its feet with the display platform.
+      // Recalculate after scaling; center the model and place its feet just
+      // above the floor rings so the full body remains in the camera frame.
       const fittedBounds = new THREE.Box3().setFromObject(player, true);
       const fittedCenter = fittedBounds.getCenter(new THREE.Vector3());
       player.position.x -= fittedCenter.x;
       player.position.z -= fittedCenter.z;
-      player.position.y += -1.05 - fittedBounds.min.y;
+      player.position.y -= fittedBounds.min.y + 0.92;
       player.updateMatrixWorld(true);
 
       baseY = player.position.y;
@@ -553,11 +558,15 @@
     });
     canvas.addEventListener("pointerleave", () => { pointerX = 0; pointerY = 0; });
 
-    window.addEventListener("scroll", () => {
+    function updateScrollProgress() {
+      // Zero at the top of the page, then rotate gradually as the hero leaves view.
       const rect = stage.getBoundingClientRect();
-      const distance = Math.max(1, window.innerHeight + rect.height);
-      scrollProgress = THREE.MathUtils.clamp((window.innerHeight - rect.top) / distance, 0, 1);
-    }, { passive: true });
+      const travel = Math.max(1, window.innerHeight * 0.85);
+      scrollProgress = THREE.MathUtils.clamp((-rect.top + 80) / travel, 0, 1);
+    }
+    window.addEventListener("scroll", updateScrollProgress, { passive: true });
+    window.addEventListener("resize", updateScrollProgress, { passive: true });
+    updateScrollProgress();
 
     function animate() {
       requestAnimationFrame(animate);
@@ -579,14 +588,15 @@
       if (player) {
         const targetY = baseY + Math.sin(t * 1.15) * 0.018;
         player.position.y += (targetY - player.position.y) * 0.035;
-        const scrollTurn = scrollProgress * Math.PI * 1.15;
-        player.rotation.y += ((Math.PI + scrollTurn + pointerX * 0.24 + Math.sin(t * 0.35) * 0.025) - player.rotation.y) * 0.035;
-        player.rotation.x += ((-pointerY * 0.045) - player.rotation.x) * 0.035;
+        const scrollTurn = scrollProgress * 0.9;
+        const pointerTurn = pointerX * 0.12;
+        player.rotation.y += ((scrollTurn + pointerTurn) - player.rotation.y) * 0.055;
+        player.rotation.x += ((-pointerY * 0.025) - player.rotation.x) * 0.055;
       }
       ring.rotation.z = t * 0.08;
       ring2.rotation.z = -t * 0.055;
       camera.position.x += (pointerX * 0.12 - camera.position.x) * 0.025;
-      camera.position.y += ((0.9 + pointerY * -0.08) - camera.position.y) * 0.025;
+      camera.position.y += ((0.35 + pointerY * -0.05) - camera.position.y) * 0.035;
       renderer.render(scene, camera);
     }
     animate();
