@@ -1,0 +1,5 @@
+
+User-agent: *
+Allow: /
+
+Sitemap: https://mishazen13.github.io/MonkeRoomSite/sitemap.xml
