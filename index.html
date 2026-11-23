@@ -112,7 +112,8 @@
     .hero-foot strong { display:block; color:var(--text); font:700 12px "Manrope",sans-serif; letter-spacing:0; margin-top:7px; }
     .model-wrap { position:relative; height:min(75vh,700px); min-height:420px; margin-right:-7%; }
     #hero-canvas { width:100%; height:100%; display:block; outline:none; }
-    .model-glow { position:absolute; width:70%; aspect-ratio:1; border-radius:50%; background:var(--accent); opacity:.13; filter:blur(90px); top:18%; left:17%; pointer-events:none; }
+    .model-glow { position:absolute; width:70%; aspect-ratio:1; border-radius:50%; background:var(--accent); opacity:.13; filter:blur(90px); top:18%; left:17%; pointer-events:none; transition:opacity .5s ease; }
+    html[data-theme="light"] .model-glow { opacity:.055; }
     .model-caption { position:absolute; right:7%; bottom:10%; color:var(--muted); font:10px "DM Mono",monospace; letter-spacing:.13em; text-transform:uppercase; }
     .scroll-cue { position:absolute; bottom:32px; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:12px; color:var(--muted); font:9px "DM Mono",monospace; letter-spacing:.16em; text-transform:uppercase; }
     .scroll-cue i { display:block; width:1px; height:34px; background:linear-gradient(var(--accent),transparent); animation:scrollline 1.7s ease-in-out infinite; }
@@ -419,7 +420,7 @@
     const stage = document.getElementById("modelStage");
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(34, 1, 0.01, 100);
-    camera.position.set(0, 0.9, 5.3);
+    camera.position.set(0, 0.9, 5.8);
 
     const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.8));
@@ -427,27 +428,42 @@
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.12;
 
-    const ambient = new THREE.HemisphereLight(0xc8dcff, 0x10182a, 2.0);
+    const ambient = new THREE.HemisphereLight(0xc8dcff, 0x10182a, 1.8);
     scene.add(ambient);
-    const keyLight = new THREE.DirectionalLight(0xffffff, 3.2);
+    const keyLight = new THREE.DirectionalLight(0xffffff, 3.0);
     keyLight.position.set(3, 5, 4);
     scene.add(keyLight);
-    const blueLight = new THREE.PointLight(0x397fff, 24, 12);
+    const blueLight = new THREE.PointLight(0x397fff, 18, 12);
     blueLight.position.set(-3, 1.2, 2.5);
     scene.add(blueLight);
-    const rimLight = new THREE.PointLight(0x82b4ff, 18, 10);
+    const rimLight = new THREE.PointLight(0x82b4ff, 12, 10);
     rimLight.position.set(2.5, 2.2, -2);
     scene.add(rimLight);
+
+    const themeLighting = {
+      dark: {
+        ambientSky: new THREE.Color(0xc8dcff), ambientGround: new THREE.Color(0x10182a),
+        ambientIntensity: 1.8, keyIntensity: 3.0, blueIntensity: 18, rimIntensity: 12,
+        accent: new THREE.Color(0x4d8dff), ringOpacity: 0.38, ring2Opacity: 0.20, exposure: 1.12
+      },
+      light: {
+        ambientSky: new THREE.Color(0xffffff), ambientGround: new THREE.Color(0xc4ccda),
+        ambientIntensity: 2.25, keyIntensity: 2.0, blueIntensity: 7, rimIntensity: 4,
+        accent: new THREE.Color(0x2563eb), ringOpacity: 0.16, ring2Opacity: 0.08, exposure: 0.98
+      }
+    };
+    let targetLighting = themeLighting.dark;
 
     const stageGroup = new THREE.Group();
     scene.add(stageGroup);
 
-    const ringMaterial = new THREE.MeshBasicMaterial({ color: 0x4d8dff, transparent: true, opacity: 0.38 });
+    const ringMaterial = new THREE.MeshBasicMaterial({ color: 0x4d8dff, transparent: true, opacity: 0.38, depthWrite: false });
     const ring = new THREE.Mesh(new THREE.TorusGeometry(1.42, 0.004, 8, 120), ringMaterial);
     ring.rotation.x = Math.PI * 0.5;
     ring.position.y = -1.18;
     stageGroup.add(ring);
-    const ring2 = new THREE.Mesh(new THREE.TorusGeometry(1.65, 0.002, 8, 120), new THREE.MeshBasicMaterial({ color: 0x83b5ff, transparent: true, opacity: 0.2 }));
+    const ring2Material = new THREE.MeshBasicMaterial({ color: 0x83b5ff, transparent: true, opacity: 0.2, depthWrite: false });
+    const ring2 = new THREE.Mesh(new THREE.TorusGeometry(1.65, 0.002, 8, 120), ring2Material);
     ring2.rotation.x = Math.PI * 0.5;
     ring2.position.y = -1.19;
     stageGroup.add(ring2);
@@ -462,26 +478,57 @@
     const loader = new GLTFLoader();
     loader.load("./assets/PlayerModelTricks.glb", gltf => {
       player = gltf.scene;
-      const box = new THREE.Box3().setFromObject(player);
-      const size = box.getSize(new THREE.Vector3());
-      const center = box.getCenter(new THREE.Vector3());
-      const maxDim = Math.max(size.x, size.y, size.z);
-      const scale = 2.65 / maxDim;
-      player.scale.setScalar(scale);
-      player.position.set(
-        -center.x * scale,
-        -box.min.y * scale - 1.05,
-        -center.z * scale
-      );
+
+      // Build a relaxed presentation pose from the existing Blender armature.
+      // Pole.L / Pole.R are the upper-arm pivot bones in this exported rig.
+      const leftArm = player.getObjectByName("Pole.L");
+      const rightArm = player.getObjectByName("Pole.R");
+      const leftForearm = player.getObjectByName("LowerArm.L");
+      const rightForearm = player.getObjectByName("LowerArm.R");
+      const head = player.getObjectByName("Head");
+
+      if (leftArm && rightArm) {
+        leftArm.rotation.set(0, 0, THREE.MathUtils.degToRad(-145));
+        rightArm.rotation.set(0, 0, THREE.MathUtils.degToRad(145));
+      } else {
+        console.warn("Expected Pole.L / Pole.R bones were not found; showing exported rest pose.");
+      }
+      if (leftForearm) leftForearm.rotation.z = THREE.MathUtils.degToRad(-7);
+      if (rightForearm) rightForearm.rotation.z = THREE.MathUtils.degToRad(7);
+      if (head) head.rotation.z = THREE.MathUtils.degToRad(-2.5);
+
       player.rotation.y = Math.PI;
       stageGroup.add(player);
+      player.updateMatrixWorld(true);
+      player.traverse(object => {
+        if (object.isSkinnedMesh && object.skeleton) object.skeleton.update();
+      });
+
+      // Fit by the posed character's HEIGHT rather than its original T-pose arm span.
+      // precise=true evaluates the skinned vertices after the procedural bone pose.
+      const posedBounds = new THREE.Box3().setFromObject(player, true);
+      const posedSize = posedBounds.getSize(new THREE.Vector3());
+      const targetCharacterHeight = 1.95;
+      const scale = targetCharacterHeight / Math.max(posedSize.y, 0.001);
+      player.scale.setScalar(scale);
+      player.updateMatrixWorld(true);
+      player.traverse(object => {
+        if (object.isSkinnedMesh && object.skeleton) object.skeleton.update();
+      });
+
+      // Center the actual posed mesh and align its feet with the display platform.
+      const fittedBounds = new THREE.Box3().setFromObject(player, true);
+      const fittedCenter = fittedBounds.getCenter(new THREE.Vector3());
+      player.position.x -= fittedCenter.x;
+      player.position.z -= fittedCenter.z;
+      player.position.y += -1.05 - fittedBounds.min.y;
+      player.updateMatrixWorld(true);
+
       baseY = player.position.y;
       loading.classList.add("hidden");
       setTimeout(() => loading.remove(), 500);
       window.monkeScene = { setTheme: theme => {
-        const c = theme === "dark" ? 0x4d8dff : 0x2563eb;
-        ringMaterial.color.setHex(c);
-        blueLight.color.setHex(c);
+        targetLighting = themeLighting[theme] || themeLighting.dark;
       }};
       window.monkeScene.setTheme(root.dataset.theme || "dark");
     }, undefined, error => {
@@ -515,12 +562,26 @@
     function animate() {
       requestAnimationFrame(animate);
       const t = clock.getElapsedTime();
+      // Smoothly adapt the 3D lighting to the selected page theme.
+      ambient.color.lerp(targetLighting.ambientSky, 0.045);
+      ambient.groundColor.lerp(targetLighting.ambientGround, 0.045);
+      ambient.intensity += (targetLighting.ambientIntensity - ambient.intensity) * 0.045;
+      keyLight.intensity += (targetLighting.keyIntensity - keyLight.intensity) * 0.045;
+      blueLight.intensity += (targetLighting.blueIntensity - blueLight.intensity) * 0.045;
+      rimLight.intensity += (targetLighting.rimIntensity - rimLight.intensity) * 0.045;
+      blueLight.color.lerp(targetLighting.accent, 0.045);
+      ringMaterial.color.lerp(targetLighting.accent, 0.045);
+      ring2Material.color.lerp(targetLighting.accent, 0.045);
+      ringMaterial.opacity += (targetLighting.ringOpacity - ringMaterial.opacity) * 0.045;
+      ring2Material.opacity += (targetLighting.ring2Opacity - ring2Material.opacity) * 0.045;
+      renderer.toneMappingExposure += (targetLighting.exposure - renderer.toneMappingExposure) * 0.045;
+
       if (player) {
-        const targetY = baseY + Math.sin(t * 1.15) * 0.025;
+        const targetY = baseY + Math.sin(t * 1.15) * 0.018;
         player.position.y += (targetY - player.position.y) * 0.035;
         const scrollTurn = scrollProgress * Math.PI * 1.15;
-        player.rotation.y += ((Math.PI + scrollTurn + pointerX * 0.24 + Math.sin(t * 0.35) * 0.035) - player.rotation.y) * 0.035;
-        player.rotation.x += ((-pointerY * 0.055) - player.rotation.x) * 0.035;
+        player.rotation.y += ((Math.PI + scrollTurn + pointerX * 0.24 + Math.sin(t * 0.35) * 0.025) - player.rotation.y) * 0.035;
+        player.rotation.x += ((-pointerY * 0.045) - player.rotation.x) * 0.035;
       }
       ring.rotation.z = t * 0.08;
       ring2.rotation.z = -t * 0.055;
